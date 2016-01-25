@@ -1,8 +1,8 @@
 #!/bin/bash
 
-gateway='192.168.126.1'
+gateway='192.168.1.1'
 mask='255.255.255.0'
-range='192.168.126.0/24'
+range='192.168.1.0/24'
 
 function usage(){
 cat <<_EOT_
