@@ -31,8 +31,7 @@ do
   esac
 done
 
+ufw disable && ufw enable
 service hostapd restart
 ifconfig wlan0 "$gateway" netmask "$mask"
 service isc-dhcp-server restart
-sysctl -w net.ipv4.ip_forward=1
-iptables -t nat -A POSTROUTING -s "$range" -o eth0 -j MASQUERADE
