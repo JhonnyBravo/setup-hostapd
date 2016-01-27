@@ -1,6 +1,6 @@
 #!/bin/bash
 
-package="hostapd isc-dhcp-server"
+package="hostapd isc-dhcp-server iw"
 i_flag=0
 u_flag=0
 
