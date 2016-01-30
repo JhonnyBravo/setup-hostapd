@@ -3,8 +3,9 @@
 out_dir="template"
 hostapd_init="/etc/default/hostapd"
 dhcpd_init="/etc/default/isc-dhcp-server"
+interfaces_init="/etc/network/interfaces"
 ufw_init="/etc/default/ufw"
-init_list="${hostapd_init} ${dhcpd_init} ${ufw_init}"
+init_list="${hostapd_init} ${dhcpd_init} ${interfaces_init} ${ufw_init}"
 
 function usage(){
 cat <<_EOT_
@@ -14,6 +15,7 @@ Usage:
 Description:
   ${hostapd_init},
   ${dhcpd_init},
+  ${interfaces_init},
   ${ufw_init} を
   ./${out_dir} へコピーします。
 
