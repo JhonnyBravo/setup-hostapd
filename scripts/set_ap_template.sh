@@ -38,9 +38,9 @@ if [ $h_flag -eq 1 ]; then
 fi
 
 provision_dnsmasq_conf.sh -s "${template_directory}/dnsmasq.conf"
-provision_hostapd_config.sh -s "${template_directory}/hostapd.conf"
+provision_hostapd_conf.sh -s "${template_directory}/hostapd.conf"
 provision_hostapd_init.sh -s "${template_directory}/hostapd"
 provision_interfaces.sh -s "${template_directory}/interfaces"
-provision_network_manager.sh -s "${template_directory}/NetworkManager.conf"
+provision_network_manager_conf.sh -s "${template_directory}/NetworkManager.conf"
 provision_rc_local.sh -s "${template_directory}/rc.local"
 provision_sysctl_conf.sh -s "${template_directory}/sysctl.conf"
