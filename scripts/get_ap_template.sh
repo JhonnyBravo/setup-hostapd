@@ -42,9 +42,9 @@ if [ ! -d "$template_directory" ]; then
 fi
 
 provision_dnsmasq_conf.sh -g "$template_directory"
-provision_hostapd_config.sh -g "$template_directory"
+provision_hostapd_conf.sh -g "$template_directory"
 provision_hostapd_init.sh -g "$template_directory"
 provision_interfaces.sh -g "$template_directory"
-provision_network_manager.sh -g "$template_directory"
+provision_network_manager_conf.sh -g "$template_directory"
 provision_rc_local.sh -g "$template_directory"
 provision_sysctl_conf.sh -g "$template_directory"
