@@ -37,10 +37,12 @@ if [ $h_flag -eq 1 ]; then
   get_usage
 fi
 
-provision_dnsmasq_conf.sh -s "${template_directory}/dnsmasq.conf"
 provision_hostapd_conf.sh -s "${template_directory}/hostapd.conf"
 provision_hostapd_init.sh -s "${template_directory}/hostapd"
+provision_dhcpd_conf.sh -s "${template_directory}/dhcpd.conf"
+provision_dhcpd_init.sh -s "${template_directory}/isc-dhcp-server"
 provision_interfaces.sh -s "${template_directory}/interfaces"
 provision_network_manager_conf.sh -s "${template_directory}/NetworkManager.conf"
-provision_rc_local.sh -s "${template_directory}/rc.local"
+provision_ufw_init.sh -s "${template_directory}/ufw"
 provision_sysctl_conf.sh -s "${template_directory}/sysctl.conf"
+provision_before_rules.sh -s "${template_directory}/before.rules"
