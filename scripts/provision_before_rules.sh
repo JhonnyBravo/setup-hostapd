@@ -1,6 +1,6 @@
 #!/bin/bash
 
-default_path="/etc/rc.local"
+default_path="/etc/ufw/before.rules"
 file_name=$(basename ${default_path})
 
 g_flag=0
@@ -64,10 +64,10 @@ shift $((OPTIND - 2))
 
 if [ $g_flag -eq 1 ]; then
   directory_name="$1"
-  cat "$default_path" > "${directory_name}/${file_name}"
+  cat ${default_path} > "${directory_name}/${file_name}"
 elif [ $s_flag -eq 1 ]; then
-  source_path="$1"
-  install "$source_path" "$default_path" -m 0755
+  template_path="$1"
+  install "$template_path" "$default_path" -m 0640
 elif [ $h_flag -eq 1 ]; then
   get_usage
 fi
