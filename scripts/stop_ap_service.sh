@@ -29,5 +29,6 @@ do
   esac
 done
 
-/etc/init.d/dnsmasq stop
+service isc-dhcp-server stop
 service hostapd stop
+ufw disable
