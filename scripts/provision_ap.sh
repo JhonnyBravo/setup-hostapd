@@ -1,6 +1,6 @@
 #!/bin/bash
 
-package="hostapd iw dnsmasq haveged"
+package="hostapd iw isc-dhcp-server haveged"
 
 i_flag=0
 u_flag=0
@@ -16,7 +16,8 @@ Usage:
   ${0} [-i] [-u] [-h]
 
 Description:
-  ${package} をインストール / アンインストールします。
+  ${package} を
+  インストール / アンインストールします。
 
 Options:
   ${i_description}
