@@ -1,6 +1,6 @@
 #!/bin/bash
 
-default_path="/etc/sysctl.conf"
+default_path="/etc/ufw/sysctl.conf"
 file_name=$(basename ${default_path})
 
 g_flag=0
