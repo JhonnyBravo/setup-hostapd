@@ -29,5 +29,6 @@ do
   esac
 done
 
-/etc/init.d/dnsmasq start
+service isc-dhcp-server start
 service hostapd start
+ufw enable
