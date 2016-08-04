@@ -1,5 +1,6 @@
 #!/bin/bash
 
+package_name="ufw"
 script_name=$(basename "$0")
 destination="backup"
 
@@ -44,15 +45,15 @@ USAGE
   ${script_name} -h
 
 DESCRIPTION
-  ufw の設定ファイルを一括で取得またはインストールします。
+  ${package_name} の設定ファイルを一括で取得またはインストールします。
 
 OPTIONS
   -i directory_path
     指定したディレクトリの配下にある
-    ufw の設定ファイルをインストールします。
+    ${package_name} の設定ファイルをインストールします。
 
   -g user_name
-    ufw の設定ファイルを ./${destination} へコピーし、
+    ${package_name} の設定ファイルを ./${destination} へコピーし、
     ./${destination} の所有者を指定したユーザへ変更します。
 
   -h  ヘルプを表示します。
