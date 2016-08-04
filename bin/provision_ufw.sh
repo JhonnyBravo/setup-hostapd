@@ -39,16 +39,22 @@ NAME
   ${script_name}
 
 USAGE
-  ${script_name} [-i] [-g] [-h]
+  ${script_name} -i directory_path
+  ${script_name} -g user_name
+  ${script_name} -h
 
 DESCRIPTION
-  ${package} をインストール / アンインストールします。
+  ufw の設定ファイルを一括で取得またはインストールします。
 
 OPTIONS
-  -i  ${package} をインストールします。
-  -g user_name  
+  -i directory_path
+    指定したディレクトリの配下にある
+    ufw の設定ファイルをインストールします。
+
+  -g user_name
     ufw の設定ファイルを ./${destination} へコピーし、
     ./${destination} の所有者を指定したユーザへ変更します。
+
   -h  ヘルプを表示します。
 _EOT_
 exit 1
