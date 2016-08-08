@@ -94,6 +94,7 @@ elif [ $g_flag -eq 1 ]; then
   for file_name in $file_list
   do
     install -m 0644 "$file_name" "$destination"
-    chown -R "${user_name}:${user_name}" "$destination"
   done
+
+  chown -R "${user_name}:${user_name}" "$destination"
 fi
