@@ -7,13 +7,6 @@ destination="backup"
 i_flag=0
 g_flag=0
 
-function get_file_list(){
-cat <<_EOT_
-/etc/default/hostapd 0644
-/etc/hostapd/hostapd.conf 0644
-_EOT_
-}
-
 function install_file(){
   if [ -f "${1}/hostapd.conf" ]; then
     install -m 0644 "${1}/hostapd.conf" "/etc/hostapd/hostapd.conf"
@@ -75,7 +68,6 @@ if [ $i_flag -eq 1 ]; then
   install_file "$1"
 elif [ $g_flag -eq 1 ]; then
   user_name="$1"
-  file_list=$(get_file_list | awk '{print $1}')
 
   if [ ! -d "$destination" ]; then
     mkdir "$destination"
