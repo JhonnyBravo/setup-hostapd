@@ -45,7 +45,9 @@ do
 done
 
 if [ $i_flag -eq 1 ]; then
+  # shellcheck disable=SC2086
   apt-get install $package
 elif [ $u_flag -eq 1 ]; then
+  # shellcheck disable=SC2086
   apt-get purge $package
 fi
