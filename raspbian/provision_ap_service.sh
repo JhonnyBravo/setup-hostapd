@@ -51,7 +51,6 @@ if [ $e_flag -eq 1 ]; then
     service "$service_name" start
   done
 
-  ufw enable
 elif [ $d_flag -eq 1 ]; then
   for service_name in $package_name
   do
