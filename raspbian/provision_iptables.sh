@@ -9,7 +9,7 @@ g_flag=0
 
 function get_file_list(){
 cat <<_EOT_
-/etc/iptables.ipv4.nat 0644
+/etc/iptables.rules 0644
 /etc/network/if-pre-up.d/iptables 0755
 _EOT_
 }
