@@ -32,10 +32,14 @@ iptables -A OUTPUT -p icmp --icmp-type echo-request -s $router_ip -d $internal_i
 iptables -A INPUT -p icmp --icmp-type echo-reply -s $internal_ip -d $router_ip -j ACCEPT
 
 # iTunes
-iptables -A INPUT -p udp --sport 68 --dport 67 -j ACCEPT # bootpc, bootps
+# UDP
+iptables -A INPUT -p udp --sport 68 --dport 67 -j ACCEPT # bootpc -> bootps
 iptables -A INPUT -p udp --sport 137 --dport 137 -j ACCEPT # netbios-ns
 iptables -A INPUT -p udp --sport 138 --dport 138 -j ACCEPT # netbios-dgm
 iptables -A INPUT -p udp --sport 5353 --dport 5353 -j ACCEPT # mdns
+
+# TCP
+iptables -A INPUT -p tcp --sport 443 --dport 49152:65535 -j ACCEPT # https -> Xsan
 
 # nat
 iptables -t nat -A POSTROUTING -o eth0 -s $internal_ip -j MASQUERADE
