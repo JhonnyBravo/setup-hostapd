@@ -39,7 +39,9 @@ iptables -A INPUT -p udp --sport 138 --dport 138 -j ACCEPT # netbios-dgm
 iptables -A INPUT -p udp --sport 5353 --dport 5353 -j ACCEPT # mdns
 
 # TCP
+iptables -A INPUT -p tcp --sport 80 --dport 49152:65535 -j ACCEPT # http -> Xsan
 iptables -A INPUT -p tcp --sport 443 --dport 49152:65535 -j ACCEPT # https -> Xsan
+iptables -A INPUT -p tcp --sport 5223 --dport 49152:65535 -j ACCEPT # Apple プッシュ通知サービス -> Xsan
 
 # nat
 iptables -t nat -A POSTROUTING -o eth0 -s $internal_ip -j MASQUERADE
