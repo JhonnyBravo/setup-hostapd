@@ -37,6 +37,7 @@ iptables -A INPUT -p udp --sport 68 --dport 67 -j ACCEPT # bootpc -> bootps
 iptables -A INPUT -p udp --sport 137 --dport 137 -j ACCEPT # netbios-ns
 iptables -A INPUT -p udp --sport 138 --dport 138 -j ACCEPT # netbios-dgm
 iptables -A INPUT -p udp --sport 5353 --dport 5353 -j ACCEPT # mdns
+iptables -A INPUT -p udp --sport 49152:65535 --dport 9 -j ACCEPT # どこでも My Mac -> discard
 
 # TCP
 iptables -A INPUT -p tcp --sport 80 --dport 49152:65535 -j ACCEPT # http -> Xsan
