@@ -46,6 +46,7 @@ iptables -A INPUT -p tcp --sport 5223 --dport 49152:65535 -j ACCEPT # Apple ãƒ—ã
 
 # raspbian
 iptables -A INPUT -p tcp --sport 443 --dport 32768:60999 -j ACCEPT # https -> raspbian private port
+iptables -A INPUT -p tcp --sport 80 --dport 32768:60999 -j ACCEPT # http -> raspbian private port
 
 # nat
 iptables -t nat -A POSTROUTING -o eth0 -s $internal_ip -j MASQUERADE
@@ -61,4 +62,5 @@ iptables -A LOGGING -j LOG --log-level warning --log-prefix "DROP:" -m limit
 iptables -A LOGGING -j DROP
 
 iptables -A INPUT -j LOGGING
+iptables -A OUTPUT -j LOGGING
 iptables -A FORWARD -j LOGGING
