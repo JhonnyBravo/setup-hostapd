@@ -44,6 +44,9 @@ iptables -A INPUT -p tcp --sport 80 --dport 49152:65535 -j ACCEPT # http -> Xsan
 iptables -A INPUT -p tcp --sport 443 --dport 49152:65535 -j ACCEPT # https -> Xsan
 iptables -A INPUT -p tcp --sport 5223 --dport 49152:65535 -j ACCEPT # Apple プッシュ通知サービス -> Xsan
 
+# raspbian
+iptables -A INPUT -p tcp --sport 443 --dport 32768:60999 -j ACCEPT # https -> raspbian private port
+
 # nat
 iptables -t nat -A POSTROUTING -o eth0 -s $internal_ip -j MASQUERADE
 
