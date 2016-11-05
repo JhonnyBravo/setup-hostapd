@@ -1,6 +1,7 @@
 #!/bin/bash
 
 internal_ip='192.168.2.0/24'
+external_ip='192.168.1.6'
 router_ip='192.168.2.1'
 
 echo 1 > /proc/sys/net/ipv4/ip_forward
@@ -33,10 +34,8 @@ iptables -A INPUT -p icmp --icmp-type echo-reply -s $internal_ip -d $router_ip -
 
 # iTunes
 # UDP
-iptables -A INPUT -p udp --sport 68 --dport 67 -j ACCEPT # bootpc -> bootps
 iptables -A INPUT -p udp --sport 137 --dport 137 -j ACCEPT # netbios-ns
 iptables -A INPUT -p udp --sport 138 --dport 138 -j ACCEPT # netbios-dgm
-iptables -A INPUT -p udp --sport 5353 --dport 5353 -j ACCEPT # mdns
 iptables -A INPUT -p udp --sport 49152:65535 --dport 9 -j ACCEPT # どこでも My Mac -> discard
 
 # TCP
@@ -45,8 +44,24 @@ iptables -A INPUT -p tcp --sport 443 --dport 49152:65535 -j ACCEPT # https -> Xs
 iptables -A INPUT -p tcp --sport 5223 --dport 49152:65535 -j ACCEPT # Apple プッシュ通知サービス -> Xsan
 
 # raspbian
-iptables -A INPUT -p tcp --sport 443 --dport 32768:60999 -j ACCEPT # https -> raspbian private port
-iptables -A INPUT -p tcp --sport 80 --dport 32768:60999 -j ACCEPT # http -> raspbian private port
+# HTTPS
+iptables -A INPUT -p tcp --sport 443 --dport 32768:60999 -j ACCEPT
+iptables -A OUTPUT -p tcp -s $external_ip --sport 32768:60999 --dport 443 -j ACCEPT
+
+# HTTP
+iptables -A INPUT -p tcp --sport 80 --dport 32768:60999 -j ACCEPT
+iptables -A OUTPUT -p tcp -s $external_ip --sport 32768:60999 --dport 80 -j ACCEPT
+
+# DNS
+iptables -A OUTPUT -p udp -s $external_ip --sport 32768:60999 -d 192.168.1.1 --dport 53 -j ACCEPT
+
+# mDNS
+iptables -A INPUT -p udp --sport 5353 --dport 5353 -j ACCEPT
+iptables -A OUTPUT -p udp -s $router_ip --sport 5353 --dport 5353 -j ACCEPT
+
+# DHCP
+iptables -A INPUT -p udp --sport 68 --dport 67 -j ACCEPT
+iptables -A OUTPUT -p udp -s $router_ip --sport 67 -d $internal_ip --dport 68 -j ACCEPT
 
 # nat
 iptables -t nat -A POSTROUTING -o eth0 -s $internal_ip -j MASQUERADE
