@@ -1,8 +1,9 @@
 #!/bin/bash
 
-internal_ip='192.168.2.0/24'
+gateway_ip='192.168.1.1'
 external_ip='192.168.1.6'
 router_ip='192.168.2.1'
+internal_ip='192.168.2.0/24'
 
 echo 1 > /proc/sys/net/ipv4/ip_forward
 
@@ -39,29 +40,40 @@ iptables -A INPUT -p udp --sport 138 --dport 138 -j ACCEPT # netbios-dgm
 iptables -A INPUT -p udp --sport 49152:65535 --dport 9 -j ACCEPT # どこでも My Mac -> discard
 
 # TCP
-iptables -A INPUT -p tcp --sport 80 --dport 49152:65535 -j ACCEPT # http -> Xsan
-iptables -A INPUT -p tcp --sport 443 --dport 49152:65535 -j ACCEPT # https -> Xsan
 iptables -A INPUT -p tcp --sport 5223 --dport 49152:65535 -j ACCEPT # Apple プッシュ通知サービス -> Xsan
 
 # raspbian
+# DNS
+iptables -A OUTPUT -p udp -s $external_ip --sport 32768:60999 -d $gateway_ip --dport 53 -j ACCEPT
+
+# NTP
+iptables -A OUTPUT -p udp -s $external_ip --sport 123 --dport 123 -j ACCEPT
+
 # HTTPS
-iptables -A INPUT -p tcp --sport 443 --dport 32768:60999 -j ACCEPT
+iptables -A INPUT -p tcp --sport 443 -d $external_ip --dport 32768:60999 -j ACCEPT
 iptables -A OUTPUT -p tcp -s $external_ip --sport 32768:60999 --dport 443 -j ACCEPT
 
 # HTTP
-iptables -A INPUT -p tcp --sport 80 --dport 32768:60999 -j ACCEPT
+iptables -A INPUT -p tcp --sport 80 -d $external_ip --dport 32768:60999 -j ACCEPT
 iptables -A OUTPUT -p tcp -s $external_ip --sport 32768:60999 --dport 80 -j ACCEPT
 
-# DNS
-iptables -A OUTPUT -p udp -s $external_ip --sport 32768:60999 -d 192.168.1.1 --dport 53 -j ACCEPT
-
 # mDNS
-iptables -A INPUT -p udp --sport 5353 --dport 5353 -j ACCEPT
+# internal
+iptables -A INPUT -p udp -s $internal_ip --sport 5353 --dport 5353 -j ACCEPT
 iptables -A OUTPUT -p udp -s $router_ip --sport 5353 --dport 5353 -j ACCEPT
 
+# external
+iptables -A INPUT -p udp -s $external_ip --sport 5353 --dport 5353 -j ACCEPT
+iptables -A OUTPUT -p udp -s $external_ip --sport 5353 --dport 5353 -j ACCEPT
+
 # DHCP
-iptables -A INPUT -p udp --sport 68 --dport 67 -j ACCEPT
+# internal
+iptables -A INPUT -p udp -s $internal_ip --sport 68 -d $router_ip --dport 67 -j ACCEPT
 iptables -A OUTPUT -p udp -s $router_ip --sport 67 -d $internal_ip --dport 68 -j ACCEPT
+
+# external
+iptables -A INPUT -p udp -s $gateway_ip --sport 67 -d $external_ip --dport 68 -j ACCEPT
+iptables -A OUTPUT -p udp -s $external_ip --sport 68 -d $gateway_ip --dport 67 -j ACCEPT
 
 # nat
 iptables -t nat -A POSTROUTING -o eth0 -s $internal_ip -j MASQUERADE
