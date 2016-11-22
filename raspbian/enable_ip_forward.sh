@@ -2,6 +2,8 @@
 
 in_router='192.168.2.1'
 in_ip_address='192.168.2.0/24'
+
+ex_router='192.168.1.1'
 ex_ip_address='192.168.1.0/24'
 
 echo 1 > /proc/sys/net/ipv4/ip_forward
@@ -16,9 +18,6 @@ iptables -P OUTPUT ACCEPT
 iptables -P FORWARD DROP
 
 iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-iptables -A OUTPUT -o eth0 -j ACCEPT
-iptables -A OUTPUT -s $in_router -j ACCEPT
 
 iptables -A FORWARD -i eth0 -o wlan0 -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A FORWARD -i wlan0 -o eth0 -s $in_ip_address -j ACCEPT
@@ -35,49 +34,58 @@ iptables -A OUTPUT -p icmp --icmp-type echo-reply -s $in_router -d $in_ip_addres
 iptables -A OUTPUT -p icmp --icmp-type echo-request -s $in_router -d $in_ip_address -j ACCEPT
 iptables -A INPUT -p icmp --icmp-type echo-reply -s $in_ip_address -d $in_router -j ACCEPT
 
-# mDNS
-# internal
-iptables -A INPUT -p udp -s $in_ip_address --sport 5353 --dport 5353 -j ACCEPT
-iptables -A OUTPUT -p udp -s $in_router --sport 5353 --dport 5353 -j ACCEPT
+# NTP
+iptables -A OUTPUT -o eth0 -s $ex_ip_address -p udp --sport 123 --dport 123 -j ACCEPT
+iptables -A OUTPUT -o eth0 -s $in_router -p udp --sport 123 --dport 123 -j ACCEPT
 
-# external
-iptables -A INPUT -p udp -s $ex_ip_address --sport 5353 --dport 5353 -j ACCEPT
+# DNS
+iptables -A OUTPUT -o eth0 -s $ex_ip_address -d $ex_router -p udp --sport 32768:60999 --dport 53 -j ACCEPT
 
 # DHCP
-# internal
-iptables -A INPUT -p udp -s $in_ip_address --sport 68 -d $in_router --dport 67 -j ACCEPT
-iptables -A OUTPUT -p udp -s $in_router --sport 67 -d $in_ip_address --dport 68 -j ACCEPT
+iptables -A OUTPUT -o wlan0 -s $in_router -d $in_ip_address -p udp --sport 67 --dport 68 -j ACCEPT
+iptables -A INPUT -i wlan0 -s $in_ip_address -d $in_router -p udp --sport 68 --dport 67 -j ACCEPT
 
-iptables -A INPUT -p udp -i wlan0 --sport 68 -d 255.255.255.255 --dport 67 -j ACCEPT
+iptables -A OUTPUT -o eth0 -s $ex_ip_address -d $ex_router -p udp --sport 68 --dport 67 -j ACCEPT
+iptables -A INPUT -i eth0 -s $ex_router -d $ex_ip_address -p udp --sport 67 --dport 68 -j ACCEPT
 
-# external
-iptables -A INPUT -p udp -i eth0 --sport 68 -d 255.255.255.255 --dport 67 -j ACCEPT
+iptables -A INPUT -i eth0 -s $ex_router -d 255.255.255.255 -p udp --sport 67 --dport 68 -j ACCEPT
+iptables -A INPUT -i eth0 -d 255.255.255.255 -p udp --sport 68 --dport 67 -j ACCEPT
+iptables -A INPUT -i wlan0 -d 255.255.255.255 -p udp --sport 68 --dport 67 -j ACCEPT
 
-# HTTPS
-# external
-iptables -A INPUT -p tcp --sport 443 -d $ex_ip_address --dport 49152:65535 -j ACCEPT
+# mDNS
+iptables -A OUTPUT -o eth0 -s $ex_ip_address -d 224.0.0.251 -p udp --sport 5353 --dport 5353 -j ACCEPT
+iptables -A INPUT -i eth0 -s $ex_ip_address -d 224.0.0.251 -p udp --sport 5353 --dport 5353 -j ACCEPT
 
-# netbios-dgm
-# external
-iptables -A INPUT -p udp -s $ex_ip_address --sport 138 --dport 138 -j ACCEPT
-
-# internal
-iptables -A INPUT -p udp -s $in_ip_address --sport 138 --dport 138 -j ACCEPT
-
-# netbios-ns
-# external
-iptables -A INPUT -p udp -s $ex_ip_address --sport 137 --dport 137 -j ACCEPT
-
-# internal
-iptables -A INPUT -p udp -s $in_ip_address --sport 137 --dport 137 -j ACCEPT
-
-# discard
-# internal
-iptables -A INPUT -p udp -s $in_ip_address --sport 49152:65535 --dport 9 -j ACCEPT
+iptables -A OUTPUT -o wlan0 -s $in_router -d 224.0.0.251 -p udp --sport 5353 --dport 5353 -j ACCEPT
+iptables -A INPUT -i wlan0 -s $in_ip_address -d 224.0.0.251 -p udp --sport 5353 --dport 5353 -j ACCEPT
 
 # Apple プッシュ通知サービス
-# external
-iptables -A INPUT -p tcp --sport 5223 -d $ex_ip_address --dport 49152:65535 -j ACCEPT
+iptables -A OUTPUT -o eth0 -s $ex_ip_address -p tcp --sport 49152:65535 --dport 5223 -j ACCEPT
+iptables -A INPUT -i eth0 -d $ex_ip_address -p tcp --sport 5223 --dport 49152:65535 -j ACCEPT
+
+# HTTPS
+iptables -A INPUT -i eth0 -d $ex_ip_address -p tcp --sport 443 --dport 32768:65535 -j ACCEPT
+
+# HTTP
+iptables -A INPUT -i eth0 -d $ex_ip_address -p tcp --sport 80 --dport 32768:65535 -j ACCEPT
+
+# netbios-ns
+iptables -A INPUT -i eth0 -s $ex_ip_address -d 192.168.1.255 -p udp --sport 137 --dport 137 -j ACCEPT
+iptables -A INPUT -i wlan0 -s $in_ip_address -d 192.168.2.255 -p udp --sport 137 --dport 137 -j ACCEPT
+
+# netbios-dgm
+iptables -A INPUT -i eth0 -s $ex_ip_address -d 192.168.1.255 -p udp --sport 138 --dport 138 -j ACCEPT
+iptables -A INPUT -i wlan0 -s $in_ip_address -d 192.168.2.255 -p udp --sport 138 --dport 138 -j ACCEPT
+
+# discard
+iptables -A INPUT -i wlan0 -s $in_ip_address -d 224.0.0.251 -p udp --sport 49152:65535 --dport 9 -j ACCEPT
+
+# igmp.mcast.net
+iptables -A OUTPUT -o eth0 -s $ex_ip_address -d 224.0.0.22 -j ACCEPT
+iptables -A OUTPUT -o wlan0 -s $in_router -d 224.0.0.22 -j ACCEPT
+
+iptables -A OUTPUT -o wlan0 -s $in_router -d $in_ip_address -j ACCEPT
+iptables -A OUTPUT -o eth0 -s $ex_ip_address -j ACCEPT
 
 # nat
 iptables -t nat -A POSTROUTING -o eth0 -s $in_ip_address -j MASQUERADE
