@@ -1,0 +1,4 @@
+#!/bin/bash
+# インストール先: /etc/network/if-pre-up.d
+iptables-restore < /etc/iptables.rules
+exit 0
