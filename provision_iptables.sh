@@ -1,6 +1,6 @@
 #!/bin/bash
 
-package_name="iptables.ipv4.nat, iptables"
+package_name="iptables.rules, iptables"
 script_name=$(basename "$0")
 destination="backup"
 
