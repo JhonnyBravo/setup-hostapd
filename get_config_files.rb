@@ -4,10 +4,12 @@ directory "templates" do
 end
 
 # hostapd.conf
-execute "get-hostapd-conf" do
+execute "get_hostapd_conf_gz" do
   not_if "test -f /etc/hostapd/hostapd.conf"
   command "zcat /usr/share/doc/hostapd/examples/hostapd.conf.gz > templates/hostapd.conf.erb"
+end
 
+execute "get_hostapd_conf" do
   only_if "test -f /etc/hostapd/hostapd.conf"
   command "cp /etc/hostapd/hostapd.conf templates/hostapd.conf.erb"
 end
