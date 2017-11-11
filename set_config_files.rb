@@ -36,7 +36,8 @@ end
 # dhcpcd.conf
 template "/etc/dhcpcd.conf" do
   action :create
-  mode "644"
+  mode "664"
+  group "netdev"
   source "templates/dhcpcd.conf.erb"
 end
 
