@@ -1,49 +1,20 @@
-# hostapd.conf
-template "/etc/hostapd/hostapd.conf" do
-  action :create
-  mode "644"
-  source "templates/hostapd.conf.erb"
-end
+# /etc/hostapd/hostapd.conf
+include_recipe "hostapd/set_hostapd_conf.rb"
 
-# hostapd
-template "/etc/default/hostapd" do
-  action :create
-  mode "644"
-  source "templates/hostapd.erb"
-end
+# /etc/default/hostapd
+include_recipe "hostapd/set_hostapd.rb"
 
-# dhcpd.conf
-template "/etc/dhcp/dhcpd.conf" do
-  action :create
-  mode "644"
-  source "templates/dhcpd.conf.erb"
-end
+# /etc/dhcp/dhcpd.conf
+include_recipe "isc-dhcp-server/set_dhcpd_conf.rb"
 
-# isc-dhcp-server
-template "/etc/default/isc-dhcp-server" do
-  action :create
-  mode "644"
-  source "templates/isc-dhcp-server.erb"
-end
+# /etc/default/isc-dhcp-server
+include_recipe "isc-dhcp-server/set_isc_dhcp_server.rb"
 
-# sysctl.conf
-template "/etc/sysctl.conf" do
-  action :create
-  mode "644"
-  source "templates/sysctl.conf.erb"
-end
+# /etc/sysctl.conf
+include_recipe "network/set_sysctl_conf.rb"
 
-# dhcpcd.conf
-template "/etc/dhcpcd.conf" do
-  action :create
-  mode "664"
-  group "netdev"
-  source "templates/dhcpcd.conf.erb"
-end
+# /etc/dhcpcd.conf
+include_recipe "network/set_dhcpcd_conf.rb"
 
-# interfaces
-template "/etc/network/interfaces" do
-  action :create
-  mode "644"
-  source "templates/interfaces.erb"
-end
+# /etc/network/interfaces
+include_recipe "network/set_interfaces.rb"
