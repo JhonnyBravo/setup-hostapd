@@ -1,51 +1,20 @@
-# templates ディレクトリの生成
-directory "templates" do
-  action :create
-end
+# /etc/hostapd/hostapd.conf
+include_recipe "hostapd/get_hostapd_conf.rb"
 
-# hostapd.conf
-execute "get_hostapd_conf_gz" do
-  not_if "test -f /etc/hostapd/hostapd.conf"
-  command "zcat /usr/share/doc/hostapd/examples/hostapd.conf.gz > templates/hostapd.conf.erb"
-end
+# /etc/default/hostapd
+include_recipe "hostapd/get_hostapd.rb"
 
-execute "get_hostapd_conf" do
-  only_if "test -f /etc/hostapd/hostapd.conf"
-  command "cp /etc/hostapd/hostapd.conf templates/hostapd.conf.erb"
-end
+# /etc/dhcp/dhcpd.conf
+include_recipe "isc-dhcp-server/get_dhcpd_conf.rb"
 
-# hostapd
-template "templates/hostapd.erb" do
-  action :create
-  source "/etc/default/hostapd"
-end
+# /etc/default/isc-dhcp-server
+include_recipe "isc-dhcp-server/get_isc_dhcp_server.rb"
 
-# dhcpd.conf
-template "templates/dhcpd.conf.erb" do
-  action :create
-  source "/etc/dhcp/dhcpd.conf"
-end
+# /etc/sysctl.conf
+include_recipe "network/get_sysctl_conf.rb"
 
-# isc-dhcp-server
-template "templates/isc-dhcp-server.erb" do
-  action :create
-  source "/etc/default/isc-dhcp-server"
-end
+# /etc/dhcpcd.conf
+include_recipe "network/get_dhcpcd_conf.rb"
 
-# sysctl.conf
-template "templates/sysctl.conf.erb" do
-  action :create
-  source "/etc/sysctl.conf"
-end
-
-# dhcpcd.conf
-template "templates/dhcpcd.conf.erb" do
-  action :create
-  source "/etc/dhcpcd.conf"
-end
-
-# interfaces
-template "templates/interfaces.erb" do
-  action :create
-  source "/etc/network/interfaces"
-end
+# /etc/network/interfaces
+include_recipe "network/get_interfaces.rb"
