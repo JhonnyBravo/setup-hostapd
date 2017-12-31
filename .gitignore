@@ -1,5 +1,4 @@
 .vagrant
-/cookbooks
 
 # Bundler
 bin/*
@@ -8,6 +7,8 @@ bin/*
 .kitchen/
 .kitchen.local.yml
 
-# templates
+# itamae
 *.erb
 .env
+.keep
+Gemfile.lock
