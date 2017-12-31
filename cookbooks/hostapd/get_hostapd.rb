@@ -10,6 +10,7 @@ DST="/home/#{USER_NAME}/Templates/hostapd/"
 
 directory DST do
   action :create
+  user USER_NAME
   owner USER_NAME
   group USER_NAME
 end
@@ -17,6 +18,7 @@ end
 template "#{DST}hostapd.erb" do
   action :create
   mode "644"
+  user USER_NAME
   owner USER_NAME
   group USER_NAME
   source "#{SRC}hostapd"

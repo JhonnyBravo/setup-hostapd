@@ -11,6 +11,7 @@ DST="/home/#{USER_NAME}/Templates/hostapd/"
 
 directory DST do
   action :create
+  user USER_NAME
   owner USER_NAME
   group USER_NAME
 end
