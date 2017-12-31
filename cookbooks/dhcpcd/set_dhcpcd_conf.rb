@@ -1,12 +1,12 @@
 # set_dhcpcd_conf.rb
-# ~/Templates/network/dhcpcd.conf.erb -> /etc/dhcpcd.conf
+# ~/Templates/dhcpcd/dhcpcd.conf.erb -> /etc/dhcpcd.conf
 
 require 'dotenv'
 Dotenv.load
 
 USER_NAME=ENV["USER_NAME"]
 DST="/etc/"
-SRC="/home/#{USER_NAME}/Templates/network/"
+SRC="/home/#{USER_NAME}/Templates/dhcpcd/"
 
 template "#{DST}dhcpcd.conf" do
   action :create
