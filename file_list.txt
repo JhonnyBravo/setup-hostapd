@@ -1,8 +1,0 @@
-0644 /etc/network/interfaces
-0644 /etc/dhcpcd.conf
-0644 /etc/sysctl.conf
-0644 /etc/dhcp/dhcpd.conf
-0644 /etc/default/isc-dhcp-server
-0644 /etc/hostapd/hostapd.conf
-0644 /usr/share/doc/hostapd/examples/hostapd.conf.gz
-0644 /etc/default/hostapd
